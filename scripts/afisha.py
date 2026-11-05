@@ -18,7 +18,11 @@ import requests
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "content" / "afisha.json"
 SHELF = "https://fliphtml5.com/home/togmr"
-UA = "Mozilla/5.0 (compatible; OurVoiceNW/1.0; +https://gmgwebsite.github.io/our-voice-nw/)"
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "ru,en-US;q=0.8,en;q=0.6",
+}
 
 # month stems in Russian / Ukrainian / English titles -> month number
 MONTHS = [
@@ -66,7 +70,11 @@ def topics(desc: str) -> tuple[str, list[str]]:
 
 
 def fetch() -> list[dict]:
-    html = requests.get(SHELF, headers={"User-Agent": UA}, timeout=30).text
+    r = requests.get(SHELF, headers=HEADERS, timeout=30)
+    html = r.text
+    print(f"  shelf: HTTP {r.status_code}, {len(html)} bytes, bLink x{html.count('bLink')}")
+    if "bLink" not in html:
+        print("  page start:", re.sub(r"\s+", " ", html[:300]))
     issues = []
     for m in BOOK.finditer(html):
         title = json.loads(f'"{m[2]}"')
