@@ -26,6 +26,9 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/fetch_and_write.py
 
+      - name: Add free photos from Wikimedia Commons
+        run: python scripts/images.py
+
       - name: Read publishing mode
         id: mode
         run: echo "auto=$(python -c "import yaml;print(str(yaml.safe_load(open('config.yaml'))['pipeline']['auto_publish']).lower())")" >> "$GITHUB_OUTPUT"

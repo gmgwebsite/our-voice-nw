@@ -29,6 +29,8 @@ import feedparser
 import requests
 import yaml
 
+from images import find_image
+
 try:
     import trafilatura  # better full-text extraction
 except ImportError:  # pragma: no cover
@@ -154,6 +156,11 @@ WRITE_TOOL = {
             "skip": {"type": "boolean", "description": "true if the source text is too thin, unclear or not newsworthy"},
             "skip_reason": {"type": "string"},
             "slug": {"type": "string", "description": "short latin-letter url slug, e.g. tps-ukraine-extension"},
+            "image_queries": {"type": "string", "description": (
+                "2-3 short English search phrases for Wikimedia Commons, separated by ' | ', "
+                "most specific first. Name a real PLACE, BUILDING or LANDMARK central to the story "
+                "(e.g. 'Idaho State Capitol | Boise Idaho skyline'), or a public figure's name. "
+                "Never describe an event, a crowd or a private person.")},
             **_lang_fields("ru", "Russian"),
             **_lang_fields("uk", "Ukrainian"),
         },
@@ -331,6 +338,15 @@ def main():
             "ru": out["ru"], "uk": out["uk"],
             "generated": {"model": model, "at": datetime.now(timezone.utc).isoformat(timespec="seconds")},
         }
+        queries = [q.strip() for q in str(out.get("image_queries") or "").split("|") if q.strip()]
+        art["image_queries"] = queries
+        img = find_image(queries) if queries else None
+        art["image_checked"] = True
+        if img:
+            art["image"] = img
+            log(f"  🖼  photo: {img['title']} ({img['license']})")
+        else:
+            log("  –  no suitable free photo; using the colored cover")
         (ARTICLES / f"{aid}.json").write_text(json.dumps(art, ensure_ascii=False, indent=2), encoding="utf-8")
         written += 1
 
