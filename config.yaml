@@ -34,18 +34,28 @@ pipeline:
   max_age_hours: 36           # ignore items older than this
   # Skip a story if we already covered the same source link
   avoid_duplicates: true
+  # At most this many stories in the "ukraine" section per 7 days
+  ukraine_per_week: 1
 
 # ---------- What the editor (Claude) should look for ----------
 editorial_brief: |
   Our readers are Russian- and Ukrainian-speaking immigrants and refugees living in
   Washington, Oregon and Idaho: Ukrainian parolees (U4U / TPS), long-time immigrant
-  families, students, workers and small-business owners.
-  Pick stories that are USEFUL or IMPORTANT to them: immigration rules, TPS/parole,
-  USCIS changes, deadlines, local laws, jobs and wages, housing, health and social
-  services, schools, safety, weather emergencies, community events, and major news
-  about Ukraine that affects the diaspora.
+  families from Russia, Ukraine, Belarus, Moldova, Georgia, Armenia, Azerbaijan,
+  Kazakhstan, Uzbekistan, Kyrgyzstan, Tajikistan, Turkmenistan and the Baltic states,
+  students, workers and small-business owners.
+  Focus on AMERICAN news: national US news, federal and state politics, the economy,
+  immigration rules, TPS/parole, USCIS and ICE changes, deadlines, local laws, jobs and
+  wages, housing, health and social services, schools, safety, weather emergencies and
+  community events in the Pacific Northwest.
+  Actively look for stories in US media that involve immigrants or communities from the
+  former Soviet republics listed above (court cases, deportations, asylum, businesses,
+  achievements, community events) — these are especially valuable to our readers.
+  News from the war in Ukraine or about Ukraine's government belongs in the "ukraine"
+  section, which is strictly limited (see the quota note below). A story about Ukrainians
+  living in the US (parole, TPS, local community) is American news, not "ukraine" news.
   Avoid celebrity gossip, crime stories without public-interest value, sports scores,
-  and anything that cannot be verified from the source text.
+  tabloid sensationalism, and anything that cannot be verified from the source text.
   Prefer a mix: at least one immigration/legal story and one local Pacific Northwest story.
 
 # ---------- News sources (RSS feeds) ----------
@@ -68,6 +78,10 @@ sources:
     url: "https://feeds.npr.org/1001/rss.xml"
   - name: "The Guardian — US immigration"
     url: "https://www.theguardian.com/us-news/immigration/rss"
+  - name: "New York Post"
+    url: "https://nypost.com/news/feed/"
+  - name: "New York Post — politics"
+    url: "https://nypost.com/politics/feed/"
   - name: "Kyiv Independent"
     url: "https://kyivindependent.com/news-archive/rss/"
 

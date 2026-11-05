@@ -75,7 +75,7 @@ def collect(cfg) -> list[dict]:
             log(f"  ! skipped feed {src['name']}: {e}")
             continue
         n = 0
-        for e in feed.entries[:40]:
+        for e in feed.entries[:30]:
             t = e.get("published_parsed") or e.get("updated_parsed")
             when = datetime(*t[:6], tzinfo=timezone.utc) if t else now
             link = e.get("link")
@@ -287,16 +287,50 @@ def main():
         log("Nothing new today.")
         return
 
-    listing = "\n".join(
-        f"[{i}] ({c['source']}) {c['title']} — {c['summary'][:300]}" for i, c in enumerate(cands[:150]))
     n = pl.get("stories_per_day", 4)
+    # Ukraine quota: count "ukraine" stories published in the last 7 days
+    week_ago = (datetime.now(ZoneInfo("America/Los_Angeles")).date() - timedelta(days=7)).isoformat()
+    ua_recent = 0
+    for f in (ROOT / "content" / "articles").glob("*.json"):
+        try:
+            a = json.loads(f.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if a.get("category") == "ukraine" and not a.get("sample") and a.get("date", "") > week_ago:
+            ua_recent += 1
+    ua_left = max(0, pl.get("ukraine_per_week", 1) - ua_recent)
+    log(f"Ukraine quota: {ua_recent} in last 7 days, {ua_left} allowed today")
+    quota_note = (f"QUOTA: the 'ukraine' category may be used for at most {ua_left} story today. "
+                  if ua_left else
+                  "QUOTA: the 'ukraine' category is FULL this week — do NOT pick any story about the war "
+                  "in Ukraine or Ukraine's government; pick American stories instead. ")
+    if not ua_left:  # don't even show Ukraine-only outlets when the quota is used up
+        cands = [c for c in cands if "Kyiv" not in c["source"]]
+    listing = "\n".join(
+        f"[{i}] ({c['source']}) {c['title']} — {c['summary'][:300]}" for i, c in enumerate(cands[:260]))
     sel = ask(client, model,
               "You are the news editor for a Russian/Ukrainian-language community news site in the US Pacific Northwest.",
               f"Editorial brief:\n{cfg['editorial_brief']}\n\nAllowed categories: {', '.join(cats)}\n\n"
-              f"Pick the {n} most important and useful stories for our readers from the candidates below. "
+              f"{quota_note}\n\nPick the {n + 2} most important and useful stories for our readers from the candidates below, "
+              f"ranked best first (the last two are reserves). "
               f"Pick distinct topics (no two stories about the same event). Give each a category and a rank (1 = lead).\n\n{listing}",
               SELECT_TOOL, max_tokens=1500)
-    picks = sorted(sel["picks"], key=lambda p: p["rank"])[:n]
+    picks, ua_used = [], 0
+    for p in sorted(sel["picks"], key=lambda p: p["rank"]):
+        if not (0 <= p["index"] < len(cands)):
+            continue
+        if "Kyiv" in cands[p["index"]]["source"]:
+            p["category"] = "ukraine"  # Ukraine-only outlets always count toward the quota
+        if p["category"] == "ukraine":
+            if ua_used >= ua_left:
+                log(f"  – skipped (Ukraine quota): {cands[p['index']]['title']}")
+                continue
+            ua_used += 1
+        picks.append(p)
+        if len(picks) >= n:
+            break
+    for i, p in enumerate(picks, 1):
+        p["rank"] = i
     for p in picks:
         if 0 <= p["index"] < len(cands):
             log(f"  ✓ #{p['rank']} [{p['category']}] {cands[p['index']]['title']}  — {p['reason']}")
