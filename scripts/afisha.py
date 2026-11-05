@@ -100,7 +100,31 @@ def fetch() -> list[dict]:
     return issues
 
 
+def add_issue(link: str, month: int, year: int, topics_text: str = "", intro: str = "") -> None:
+    """Add (or replace) one issue by hand — used by the "Add Afisha issue" button on GitHub."""
+    m = re.search(r"fliphtml5\.com/togmr/([A-Za-z0-9_-]+)", link)
+    if not m:
+        sys.exit(f"That doesn't look like a FlipHTML5 link: {link}")
+    slug = m[1]
+    old = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else []
+    old = [i for i in old if i["slug"] != slug and (i["year"], i["month"]) != (year, month)]
+    items = [t.strip(" .") for t in re.split(r"[;\n]|,(?=\s*[A-ZА-ЯЁІЇЄ])", topics_text) if t.strip(" .")]
+    old.append({
+        "slug": slug, "year": year, "month": month,
+        "published": datetime.now(timezone.utc).date().isoformat(),
+        "url": f"https://online.fliphtml5.com/togmr/{slug}/",
+        "cover": f"https://online.fliphtml5.com/togmr/{slug}/files/shot.jpg",
+        "intro": intro.strip(), "topics": items[:9],
+    })
+    old.sort(key=lambda i: (i["year"], i["month"]), reverse=True)
+    OUT.write_text(json.dumps(old, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"Added {month:02d}/{year}: {slug}")
+
+
 def main() -> None:
+    if len(sys.argv) > 1 and sys.argv[1] == "--add":
+        a = sys.argv[2:] + [""] * 5
+        return add_issue(a[0], int(a[1]), int(a[2]), a[3], a[4])
     old = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else []
     try:
         new = fetch()

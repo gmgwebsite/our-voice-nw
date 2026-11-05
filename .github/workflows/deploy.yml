@@ -6,7 +6,7 @@ on:
     branches: [main]
   workflow_dispatch: {}
   workflow_run:
-    workflows: ["Daily news"]
+    workflows: ["Daily news", "Add Afisha issue"]
     types: [completed]
 
 permissions:

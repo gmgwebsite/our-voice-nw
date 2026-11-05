@@ -1,0 +1,54 @@
+# Adds a new Afisha magazine issue to the website.
+# GitHub → Actions → "Add Afisha issue" → Run workflow → paste the FlipHTML5 link → Run.
+name: Add Afisha issue
+
+on:
+  workflow_dispatch:
+    inputs:
+      link:
+        description: "FlipHTML5 link to the issue (e.g. https://online.fliphtml5.com/togmr/Afisha-December-2026/)"
+        required: true
+      month:
+        description: "Month of the issue"
+        required: true
+        type: choice
+        options: ["1 - January", "2 - February", "3 - March", "4 - April", "5 - May", "6 - June",
+                  "7 - July", "8 - August", "9 - September", "10 - October", "11 - November", "12 - December"]
+      year:
+        description: "Year of the issue"
+        required: true
+        default: "2026"
+      topics:
+        description: "Optional: what's inside, separated by semicolons (Недвижимость; Иммиграция; Рецепт месяца)"
+        required: false
+      intro:
+        description: "Optional: one or two sentences about the issue"
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install requests
+      - name: Add the issue
+        env:
+          LINK: ${{ inputs.link }}
+          MONTH: ${{ inputs.month }}
+          YEAR: ${{ inputs.year }}
+          TOPICS: ${{ inputs.topics }}
+          INTRO: ${{ inputs.intro }}
+        run: python scripts/afisha.py --add "$LINK" "${MONTH%% *}" "$YEAR" "$TOPICS" "$INTRO"
+      - name: Save
+        run: |
+          git config user.name "Our Voice NW bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add content/afisha.json
+          git diff --cached --quiet && echo "Nothing changed" && exit 0
+          git commit -m "Afisha: add ${{ inputs.month }} ${{ inputs.year }}"
+          git push
