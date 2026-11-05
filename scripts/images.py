@@ -37,6 +37,23 @@ def _plain(s: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(s)).strip()
 
 
+GENERIC = {"State", "City", "County", "Downtown", "Building", "Center", "Centre", "The", "Of", "And",
+           "North", "South", "East", "West", "New", "Old", "Main", "Street", "Park", "Hall"}
+
+
+def relevant(query: str, text: str) -> bool:
+    """The photo must actually show what we searched for: at least half of the
+    distinctive capitalized words in the query (place or person names) must
+    appear in the photo's title or description."""
+    names = [w for w in re.findall(r"[A-Z][\w'.-]+", query) if w not in GENERIC] or \
+            [w for w in re.findall(r"[A-Z][\w'.-]+", query)]
+    if not names:
+        return False
+    low = text.lower()
+    hits = sum(1 for w in names if w.lower() in low)
+    return hits >= 1 and hits * 2 >= len(names)
+
+
 def search_commons(query: str, limit: int = 12) -> dict | None:
     """Return the best freely licensed photo for `query`, or None."""
     if not query or not query.strip():
@@ -69,6 +86,8 @@ def search_commons(query: str, limit: int = 12) -> dict | None:
             continue
         if BAD_WORDS.search(title):
             continue
+        if not relevant(query, title + " " + _plain(meta.get("ImageDescription", {}).get("value", ""))[:300]):
+            continue
         author = _plain(meta.get("Artist", {}).get("value", "")) or "Unknown author"
         return {
             "url": info.get("thumburl") or info.get("url"),
@@ -90,19 +109,48 @@ def find_image(queries: list[str]) -> dict | None:
     return None
 
 
+IMAGE_VERSION = 2  # bump to make the robot re-check every story's photo
+
+
+def suggest_queries(a: dict) -> list[str]:
+    """Ask Claude for Wikimedia search phrases for an older story."""
+    import os
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        return []
+    try:
+        import anthropic
+        import yaml
+        model = os.environ.get("CLAUDE_MODEL") or yaml.safe_load(
+            (ROOT / "config.yaml").read_text(encoding="utf-8"))["pipeline"]["model"]
+        msg = anthropic.Anthropic().messages.create(
+            model=model, max_tokens=200,
+            messages=[{"role": "user", "content": (
+                "Give 2-3 short English search phrases for Wikimedia Commons to find a real photo "
+                "for this news story. Name a real PLACE, BUILDING or LANDMARK central to it, or a public "
+                "figure. Never an event, crowd or private person. Answer with the phrases only, "
+                "separated by ' | ', most specific first.\n\n"
+                f"Headline: {a.get('source', {}).get('title', '')}\nSummary: {a.get('ru', {}).get('summary', '')}")}],
+        )
+        text = "".join(b.text for b in msg.content if b.type == "text")
+        return [q.strip(" .\"'") for q in text.split("|") if q.strip()][:3]
+    except Exception as e:
+        log(f"  ! could not get photo search terms from Claude: {e}")
+        return []
+
+
 def backfill() -> int:
-    """Add photos to existing stories that have never been checked."""
+    """Add photos to stories that don't have a current-version photo check."""
     added = 0
     for f in sorted(ARTICLES.glob("*.json")):
         a = json.loads(f.read_text(encoding="utf-8"))
-        if a.get("sample") or a.get("image") or a.get("image_checked"):
+        if a.get("sample") or a.get("image_version", 0) >= IMAGE_VERSION:
             continue
-        qs = [q for q in (a.get("image_queries") or []) if q]
-        # fall back to the original English headline, trimmed to its main words
-        title = re.sub(r"[^\w\s'-]", " ", a.get("source", {}).get("title", ""))
-        qs.append(" ".join(title.split()[:6]))
+        qs = [q for q in (a.get("image_queries") or []) if q] or suggest_queries(a)
+        a["image_queries"] = qs
+        a.pop("image", None)
         img = find_image(qs)
         a["image_checked"] = True
+        a["image_version"] = IMAGE_VERSION
         if img:
             a["image"] = img
             added += 1

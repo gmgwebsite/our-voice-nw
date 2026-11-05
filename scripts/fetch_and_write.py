@@ -29,7 +29,7 @@ import feedparser
 import requests
 import yaml
 
-from images import find_image
+from images import IMAGE_VERSION, find_image
 
 try:
     import trafilatura  # better full-text extraction
@@ -159,7 +159,7 @@ WRITE_TOOL = {
             "image_queries": {"type": "string", "description": (
                 "2-3 short English search phrases for Wikimedia Commons, separated by ' | ', "
                 "most specific first. Name a real PLACE, BUILDING or LANDMARK central to the story "
-                "(e.g. 'Idaho State Capitol | Boise Idaho skyline'), or a public figure's name. "
+                "(e.g. 'Idaho State Capitol | Boise Idaho skyline'), or a public figure's name. For a Washington/Oregon/Idaho state story use that state's places (e.g. 'Washington State Capitol Olympia'), never the US Capitol unless the story is about Congress. "
                 "Never describe an event, a crowd or a private person.")},
             **_lang_fields("ru", "Russian"),
             **_lang_fields("uk", "Ukrainian"),
@@ -342,6 +342,7 @@ def main():
         art["image_queries"] = queries
         img = find_image(queries) if queries else None
         art["image_checked"] = True
+        art["image_version"] = IMAGE_VERSION
         if img:
             art["image"] = img
             log(f"  🖼  photo: {img['title']} ({img['license']})")
