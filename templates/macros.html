@@ -26,10 +26,17 @@
 
 {% macro cover(a, cats, lang, size='md') -%}
 {% set c = cats[a.category] %}
+{% if a.image %}
+<div class="cover cover-{{ size }} has-photo" style="--c: {{ c.color }}">
+  <img src="{{ a.image.url }}" alt="{{ a.image.title }}" loading="{{ 'eager' if size == 'lg' else 'lazy' }}" decoding="async" referrerpolicy="no-referrer">
+  <span class="cover-tag">{{ c[lang] }}</span>
+</div>
+{% else %}
 <div class="cover cover-{{ size }}" style="--c: {{ c.color }}">
   <span class="cover-ic">{{ icon(c.icon, 120 if size == 'lg' else 72) }}</span>
   <span class="cover-tag">{{ c[lang] }}</span>
 </div>
+{% endif %}
 {%- endmacro %}
 
 {% macro card(a, cats, lang, t, root, size='md', show_cover=True) -%}

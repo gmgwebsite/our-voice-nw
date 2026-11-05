@@ -9,6 +9,7 @@
 <meta property="og:site_name" content="{{ site.name }}">
 <meta property="og:title" content="{{ self.title() }}">
 <meta property="og:description" content="{{ self.desc() }}">
+{% if a is defined and a.image %}<meta property="og:image" content="{{ a.image.url }}">{% endif %}
 <meta name="theme-color" content="#0b3d36">
 <link rel="alternate" type="application/rss+xml" title="{{ site.name }}" href="{{ root }}{{ lang }}/feed.xml">
 <link rel="icon" href="{{ root }}static/favicon.svg" type="image/svg+xml">

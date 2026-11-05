@@ -17,7 +17,12 @@
     </div>
   </header>
 
-  {{ cover(a, cats, lang, 'lg') }}
+  <figure class="story-figure">
+    {{ cover(a, cats, lang, 'lg') }}
+    {% if a.image %}
+    <figcaption class="credit small muted">{{ t.photo_note }} · {{ t.photo }}: {{ a.image.author }} / <a href="{{ a.image.page }}" target="_blank" rel="noopener">Wikimedia Commons</a>{% if a.image.license %}, {% if a.image.license_url %}<a href="{{ a.image.license_url }}" target="_blank" rel="noopener license">{{ a.image.license }}</a>{% else %}{{ a.image.license }}{% endif %}{% endif %}</figcaption>
+    {% endif %}
+  </figure>
 
   <div class="story-grid">
     <div class="prose">
