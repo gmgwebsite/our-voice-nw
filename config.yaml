@@ -1,0 +1,71 @@
+# ============================================================
+#  Our Voice NW — main settings
+#  Edit this file to change the site name, sources and behaviour.
+# ============================================================
+
+site:
+  name: "Our Voice NW"
+  # Full public address of the site, no trailing slash.
+  # For GitHub Pages this is usually https://<username>.github.io/<repo-name>
+  base_url: "https://gmgwebsite.github.io/our-voice-nw"
+  tagline:
+    ru: "Новости для русско- и украиноязычных жителей Северо-Запада США"
+    uk: "Новини для російсько- та україномовних мешканців Північного Заходу США"
+  contact_email: "editor@example.org"
+
+# ---------- Daily robot settings ----------
+pipeline:
+  stories_per_day: 4          # 3–4 recommended
+  # true  = new stories go live immediately
+  # false = stories are proposed as a GitHub "pull request" you approve with one click
+  auto_publish: false
+  # Claude model used for selecting and writing. Change to a newer model any time.
+  model: "claude-sonnet-4-5"
+  max_age_hours: 36           # ignore items older than this
+  # Skip a story if we already covered the same source link
+  avoid_duplicates: true
+
+# ---------- What the editor (Claude) should look for ----------
+editorial_brief: |
+  Our readers are Russian- and Ukrainian-speaking immigrants and refugees living in
+  Washington, Oregon and Idaho: Ukrainian parolees (U4U / TPS), long-time immigrant
+  families, students, workers and small-business owners.
+  Pick stories that are USEFUL or IMPORTANT to them: immigration rules, TPS/parole,
+  USCIS changes, deadlines, local laws, jobs and wages, housing, health and social
+  services, schools, safety, weather emergencies, community events, and major news
+  about Ukraine that affects the diaspora.
+  Avoid celebrity gossip, crime stories without public-interest value, sports scores,
+  and anything that cannot be verified from the source text.
+  Prefer a mix: at least one immigration/legal story and one local Pacific Northwest story.
+
+# ---------- News sources (RSS feeds) ----------
+# Add or remove freely. The robot skips any feed that fails, so one broken feed never
+# stops the daily run. Run `python scripts/check_feeds.py` to test them all.
+sources:
+  - name: "Washington State Standard"
+    url: "https://washingtonstatestandard.com/feed/"
+  - name: "Oregon Capital Chronicle"
+    url: "https://oregoncapitalchronicle.com/feed/"
+  - name: "Idaho Capital Sun"
+    url: "https://idahocapitalsun.com/feed/"
+  - name: "The Seattle Times"
+    url: "https://www.seattletimes.com/feed/"
+  - name: "OPB"
+    url: "https://www.opb.org/arc/outboundfeeds/rss/?outputType=xml"
+  - name: "The Spokesman-Review"
+    url: "https://www.spokesman.com/feeds/stories/"
+  - name: "NPR News"
+    url: "https://feeds.npr.org/1001/rss.xml"
+  - name: "The Guardian — US immigration"
+    url: "https://www.theguardian.com/us-news/immigration/rss"
+  - name: "Kyiv Independent"
+    url: "https://kyivindependent.com/news-archive/rss/"
+
+# ---------- Sections of the site ----------
+categories:
+  immigration: { ru: "Иммиграция",       uk: "Імміграція",       color: "#2563eb", icon: "passport" }
+  local:       { ru: "Северо-Запад",     uk: "Північний Захід",  color: "#0f766e", icon: "mountain" }
+  work:        { ru: "Работа и деньги",  uk: "Робота і гроші",   color: "#b45309", icon: "briefcase" }
+  services:    { ru: "Здоровье и помощь",uk: "Здоров'я і допомога", color: "#be123c", icon: "heart" }
+  community:   { ru: "Сообщество",       uk: "Громада",          color: "#7c3aed", icon: "people" }
+  ukraine:     { ru: "Украина и мир",    uk: "Україна і світ",   color: "#0369a1", icon: "globe" }
