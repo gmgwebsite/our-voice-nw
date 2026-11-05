@@ -1,0 +1,55 @@
+# Runs every morning: picks the news, writes RU/UK articles with Claude,
+# then either publishes them right away or opens a pull request for you to approve
+# (controlled by pipeline.auto_publish in config.yaml).
+name: Daily news
+
+on:
+  schedule:
+    - cron: "17 14 * * *"     # 14:17 UTC ≈ 6:17 AM Pacific (7:17 during daylight time)
+  workflow_dispatch: {}       # "Run workflow" button for a manual run
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  news:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements.txt
+
+      - name: Find and write today's stories
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/fetch_and_write.py
+
+      - name: Read publishing mode
+        id: mode
+        run: echo "auto=$(python -c "import yaml;print(str(yaml.safe_load(open('config.yaml'))['pipeline']['auto_publish']).lower())")" >> "$GITHUB_OUTPUT"
+
+      - name: Publish directly
+        if: steps.mode.outputs.auto == 'true'
+        run: |
+          git config user.name "Our Voice NW bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add content
+          git diff --cached --quiet && echo "No new stories" && exit 0
+          git commit -m "News for $(TZ=America/Los_Angeles date +%F)"
+          git push
+
+      - name: Propose stories for review
+        if: steps.mode.outputs.auto != 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: news/daily
+          delete-branch: true
+          add-paths: content
+          commit-message: "Proposed news"
+          title: "📰 Today's stories — please review"
+          body: |
+            The robot has written today's stories. Open **Files changed** to read them.
+            - Looks good → click **Merge pull request** and they go live in ~1 minute.
+            - Something wrong → edit the file right here on GitHub, or close this request to discard.
