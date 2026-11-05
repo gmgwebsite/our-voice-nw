@@ -20,7 +20,7 @@ pipeline:
   # false = stories are proposed as a GitHub "pull request" you approve with one click
   auto_publish: false
   # Claude model used for selecting and writing. Change to a newer model any time.
-  model: "claude-sonnet-4-5"
+  model: "claude-sonnet-5-5"
   max_age_hours: 36           # ignore items older than this
   # Skip a story if we already covered the same source link
   avoid_duplicates: true
