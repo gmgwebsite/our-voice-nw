@@ -24,7 +24,10 @@ jobs:
         with: { ref: main }
       - uses: actions/setup-python@v5
         with: { python-version: "3.12", cache: pip }
-      - run: pip install pyyaml jinja2
+      - run: pip install pyyaml jinja2 requests
+      - name: Refresh Afisha magazine issues
+        continue-on-error: true
+        run: python scripts/afisha.py
       - run: python scripts/build.py
       - uses: actions/upload-pages-artifact@v3
         with: { path: public }

@@ -42,6 +42,7 @@
     <div class="wrap cat-nav-row">
       <a href="{{ root }}{{ lang }}/index.html" class="{{ 'on' if page == 'home' else '' }}">{{ t.home }}</a>
       {% if radio.enabled %}<a href="{{ root }}{{ lang }}/radio.html" class="nav-radio {{ 'on' if page == 'radio' else '' }}"><span class="live-dot sm"></span>{{ t.radio }} {{ radio.frequency }}</a>{% endif %}
+      {% if afisha %}<a href="{{ root }}{{ lang }}/afisha.html" class="nav-afisha {{ 'on' if page == 'afisha' else '' }}">{{ t.afisha_short }}</a>{% endif %}
       {% for key, c in cats.items() %}
       <a href="{{ root }}{{ lang }}/c/{{ key }}.html" class="{{ 'on' if page == key else '' }}" style="--c: {{ c.color }}"><span class="dot"></span>{{ c[lang] }}</a>
       {% endfor %}
@@ -57,6 +58,7 @@
     <a href="{{ root }}{{ lang }}/index.html">{{ t.home }}</a>
     {% for key, c in cats.items() %}<a href="{{ root }}{{ lang }}/c/{{ key }}.html" style="--c: {{ c.color }}"><span class="dot"></span>{{ c[lang] }}</a>{% endfor %}
     <a href="{{ root }}{{ lang }}/archive.html">{{ t.archive }}</a>
+    {% if afisha %}<a href="{{ root }}{{ lang }}/afisha.html">{{ t.afisha }}</a>{% endif %}
     <a href="{{ root }}{{ lang }}/about.html">{{ t.about }}</a>
     {% if radio.enabled %}<a href="{{ root }}{{ lang }}/radio.html"><span class="live-dot sm"></span>{{ t.radio }} {{ radio.frequency }}</a>{% endif %}
   </div>
@@ -83,6 +85,7 @@
       <ul class="footer-links">
         <li><a href="{{ root }}{{ lang }}/about.html">{{ t.about }}</a></li>
         <li><a href="{{ root }}{{ lang }}/archive.html">{{ t.archive }}</a></li>
+        {% if afisha %}<li><a href="{{ root }}{{ lang }}/afisha.html">{{ t.afisha }}</a></li>{% endif %}
         <li><a href="{{ root }}{{ lang }}/feed.xml">{{ t.rss }}</a></li>
         <li><a href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a></li>
       </ul>

@@ -31,6 +31,10 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/images.py
 
+      - name: Check for a new Afisha magazine issue
+        continue-on-error: true
+        run: python scripts/afisha.py
+
       - name: Read publishing mode
         id: mode
         run: echo "auto=$(python -c "import yaml;print(str(yaml.safe_load(open('config.yaml'))['pipeline']['auto_publish']).lower())")" >> "$GITHUB_OUTPUT"

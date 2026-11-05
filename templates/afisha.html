@@ -1,0 +1,59 @@
+{% extends "base.html" %}{% from "macros.html" import icon %}
+{% block title %}{{ t.afisha }} — {{ t.afisha_tag }} | {{ site.name }}{% endblock %}
+{% block desc %}{{ t.afisha_intro }}{% endblock %}
+{% block main %}
+{% set cur = afisha[0] if afisha else None %}
+<section class="wrap page-head afisha-head">
+  <p class="small-h">{{ t.afisha_tag }}</p>
+  <h1>{{ t.afisha }}</h1>
+  <p class="muted">{{ t.afisha_intro }}</p>
+</section>
+
+{% if cur %}
+<section class="wrap afisha-current" aria-label="{{ t.afisha_current }}">
+  <a class="afisha-cover lg" href="{{ cur.url }}" target="_blank" rel="noopener">
+    <img src="{{ cur.cover }}" alt="{{ t.afisha }} — {{ cur.label }}" loading="eager" referrerpolicy="no-referrer">
+  </a>
+  <div class="afisha-info">
+    <p class="afisha-badge">{{ t.afisha_current }}</p>
+    <h2>{{ cur.label }}</h2>
+    {% if cur.intro %}<p class="afisha-intro">{{ cur.intro }}</p>{% endif %}
+    {% if cur.topics %}
+    <p class="small-h">{{ t.afisha_inside }}</p>
+    <ul class="afisha-topics">{% for x in cur.topics %}<li>{{ x }}</li>{% endfor %}</ul>
+    {% endif %}
+    <div class="afisha-actions">
+      <a class="btn" href="{{ cur.url }}" target="_blank" rel="noopener">{{ t.afisha_read }} {{ icon('external', 15) }}</a>
+      <a class="btn btn-ghost" href="#reader">{{ t.afisha_here }}</a>
+    </div>
+    {% if lang == 'uk' %}<p class="small muted">{{ t.afisha_lang_note }}</p>{% endif %}
+  </div>
+</section>
+
+<section class="wrap afisha-reader" id="reader" aria-label="{{ t.afisha_here }}">
+  <iframe src="{{ cur.url }}" title="{{ t.afisha }} — {{ cur.label }}" loading="lazy" allowfullscreen allow="fullscreen" referrerpolicy="no-referrer"></iframe>
+</section>
+
+{% if afisha|length > 1 %}
+<section class="wrap afisha-archive" aria-label="{{ t.afisha_archive }}">
+  <div class="sec-head"><h2 class="sec-h">{{ t.afisha_archive }}</h2></div>
+  {% for year, items in afisha[1:] | groupby('year') | reverse %}
+  <div class="afisha-year">
+    <h3 class="arch-date">{{ year }}</h3>
+    <div class="afisha-grid">
+      {% for i in items | sort(attribute='month', reverse=True) %}
+      <a class="afisha-item" href="{{ i.url }}" target="_blank" rel="noopener">
+        <span class="afisha-cover"><img src="{{ i.cover }}" alt="{{ t.afisha }} — {{ i.label }}" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>
+        <span class="afisha-item-label">{{ i.month_name }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% else %}
+<section class="wrap"><p class="empty">{{ t.empty }}</p></section>
+{% endif %}
+<section class="wrap narrow"><p class="small muted">{{ t.afisha_more }} <a href="https://www.afishamagazine.com/" target="_blank" rel="noopener">afishamagazine.com</a></p></section>
+{% endblock %}

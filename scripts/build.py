@@ -26,6 +26,12 @@ MONTHS = {
     "uk": ["січня", "лютого", "березня", "квітня", "травня", "червня", "липня", "серпня",
            "вересня", "жовтня", "листопада", "грудня"],
 }
+MONTHS_NOM = {
+    "ru": ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август",
+           "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+    "uk": ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень",
+           "Вересень", "Жовтень", "Листопад", "Грудень"],
+}
 WEEKDAYS = {
     "ru": ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"],
     "uk": ["понеділок", "вівторок", "середа", "четвер", "п'ятниця", "субота", "неділя"],
@@ -45,6 +51,11 @@ T = {  # interface strings
         "theme": "Сменить тему", "menu": "Меню", "updated": "Обновляется ежедневно",
         "rights": "Все права на исходные материалы принадлежат их авторам.",
         "skip": "Перейти к содержанию", "photo": "Фото", "photo_note": "Иллюстративное фото", "demo": "Демо-режим: показаны примеры материалов.", "back_top": "Наверх", "rss": "RSS", "radio": "Радио", "listen": "Слушать радио", "on_air": "В эфире", "popout": "Слушать в отдельном окне", "close_player": "Закрыть плеер", "radio_intro": "Прямой эфир радио для славянской общины Северо-Запада. Нажмите «Слушать», чтобы включить трансляцию.", "radio_tip": "Совет: откройте плеер в отдельном окне — радио будет играть, пока вы читаете новости.", "radio_error": "Если трансляция не запускается, попробуйте позже или откройте станцию на TuneIn.", "open_tunein": "Открыть на TuneIn",
+        "afisha": "Журнал «Афиша»", "afisha_short": "Афиша", "afisha_tag": "Журнал славянской общины Портленда с 1993 года",
+        "afisha_intro": "Ежемесячный журнал о жизни русско- и украиноязычной общины Орегона и Юго-Западного Вашингтона: недвижимость, здоровье, иммиграция, семья, события и рецепты.",
+        "afisha_current": "Свежий номер", "afisha_inside": "В этом номере", "afisha_read": "Читать онлайн",
+        "afisha_here": "Листать здесь", "afisha_archive": "Архив номеров", "afisha_all": "Все номера",
+        "afisha_lang_note": "", "afisha_more": "Больше о журнале и реклама в «Афише» —",
     },
     "uk": {
         "home": "Головна", "latest": "Свіжі новини", "top": "Головне сьогодні",
@@ -59,6 +70,11 @@ T = {  # interface strings
         "theme": "Змінити тему", "menu": "Меню", "updated": "Оновлюється щодня",
         "rights": "Усі права на вихідні матеріали належать їхнім авторам.",
         "skip": "Перейти до змісту", "photo": "Фото", "photo_note": "Ілюстративне фото", "demo": "Демо-режим: показано приклади матеріалів.", "back_top": "Вгору", "rss": "RSS", "radio": "Радіо", "listen": "Слухати радіо", "on_air": "В ефірі", "popout": "Слухати в окремому вікні", "close_player": "Закрити плеєр", "radio_intro": "Прямий ефір радіо для слов'янської громади Північного Заходу. Натисніть «Слухати», щоб увімкнути трансляцію.", "radio_tip": "Порада: відкрийте плеєр в окремому вікні — радіо гратиме, поки ви читаєте новини.", "radio_error": "Якщо трансляція не запускається, спробуйте пізніше або відкрийте станцію на TuneIn.", "open_tunein": "Відкрити на TuneIn",
+        "afisha": "Журнал «Афіша»", "afisha_short": "Афіша", "afisha_tag": "Журнал слов'янської громади Портленда з 1993 року",
+        "afisha_intro": "Щомісячний журнал про життя російсько- та україномовної громади Орегону та Південно-Західного Вашингтона: нерухомість, здоров'я, імміграція, родина, події та рецепти.",
+        "afisha_current": "Свіжий номер", "afisha_inside": "У цьому номері", "afisha_read": "Читати онлайн",
+        "afisha_here": "Гортати тут", "afisha_archive": "Архів номерів", "afisha_all": "Усі номери",
+        "afisha_lang_note": "Журнал виходить російською мовою.", "afisha_more": "Більше про журнал і реклама в «Афіші» —",
     },
 }
 
@@ -112,6 +128,12 @@ def main() -> None:
     cfg = yaml.safe_load((ROOT / "config.yaml").read_text(encoding="utf-8"))
     site, cats = cfg["site"], cfg["categories"]
     articles = load_articles()
+    ap = ROOT / "content" / "afisha.json"
+    try:
+        afisha_raw = json.loads(ap.read_text(encoding="utf-8")) if ap.exists() else []
+    except Exception as e:
+        print(f"  ! afisha.json unreadable: {e}")
+        afisha_raw = []
 
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -139,7 +161,9 @@ def main() -> None:
         other = "uk" if lang == "ru" else "ru"
         base = dict(site=site, cats=cats, lang=lang, other=other, t=T[lang], radio=cfg.get("radio") or {},
                     tagline=site["tagline"][lang], build_time=build_time,
-                    has_samples=any(a.get("sample") for a in articles))
+                    has_samples=any(a.get("sample") for a in articles),
+                    afisha=[dict(i, label=f"{MONTHS_NOM[lang][i['month'] - 1]} {i['year']}",
+                                 month_name=MONTHS_NOM[lang][i["month"] - 1]) for i in afisha_raw])
         for a in articles:
             a.setdefault("_rt", {})[lang] = reading_time(a, lang)
         latest_day = articles[0]["date"] if articles else date.today().isoformat()
@@ -169,6 +193,9 @@ def main() -> None:
                alt_url=f"{other}/archive.html")
         render("about.html", pg("about.html"), **base, page="about", about=ABOUT[lang],
                alt_url=f"{other}/about.html")
+        if afisha_raw:
+            render("afisha.html", pg("afisha.html"), **base, page="afisha", alt_url=f"{other}/afisha.html")
+            sitemap.append(f"{lang}/afisha.html")
         if (cfg.get("radio") or {}).get("enabled"):
             render("radio.html", pg("radio.html"), **base, page="radio", alt_url=f"{other}/radio.html")
             render("radio_popup.html", pg("radio-player.html"), **base, page="radio")

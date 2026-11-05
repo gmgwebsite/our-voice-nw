@@ -36,6 +36,20 @@
 </section>
 {% endif %}
 
+{% if afisha %}{% set cur = afisha[0] %}
+<section class="wrap home-afisha" aria-label="{{ t.afisha }}">
+  <a class="home-afisha-card" href="{{ root }}{{ lang }}/afisha.html">
+    <span class="afisha-cover"><img src="{{ cur.cover }}" alt="{{ t.afisha }} — {{ cur.label }}" loading="lazy" referrerpolicy="no-referrer"></span>
+    <span class="home-afisha-info">
+      <span class="afisha-badge">{{ t.afisha_current }}</span>
+      <span class="home-afisha-title">{{ t.afisha }} · {{ cur.label }}</span>
+      {% if cur.topics %}<span class="small muted">{{ cur.topics[:4] | join(' · ') }}</span>{% elif cur.intro %}<span class="small muted">{{ cur.intro }}</span>{% endif %}
+      <span class="home-afisha-more">{{ t.afisha_read }} · {{ t.afisha_all }} {{ icon('arrow', 15) }}</span>
+    </span>
+  </a>
+</section>
+{% endif %}
+
 <section class="wrap quick-cats" aria-label="{{ t.sections }}">
   {% for key, c in cats.items() %}
   <a class="qc" href="{{ root }}{{ lang }}/c/{{ key }}.html" style="--c: {{ c.color }}">
