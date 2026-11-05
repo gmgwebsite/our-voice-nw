@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ site.name }}</title>
+<link rel="icon" href="static/favicon.svg" type="image/svg+xml">
+<link rel="alternate" hreflang="ru" href="ru/index.html"><link rel="alternate" hreflang="uk" href="uk/index.html">
+<script>
+(function(){var l;try{l=localStorage.getItem('ovnw-lang')}catch(e){}
+if(!l){var n=(navigator.languages||[navigator.language||'']).join(',').toLowerCase();l=/\buk\b|uk-/.test(n)?'uk':'ru'}
+location.replace(l+'/index.html')})();
+</script>
+<link rel="stylesheet" href="static/style.css"></head>
+<body><main class="splash"><h1>{{ site.name }}</h1>
+<p><a class="btn" href="ru/index.html">Русский</a> <a class="btn" href="uk/index.html">Українська</a></p></main></body></html>
