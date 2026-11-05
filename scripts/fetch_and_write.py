@@ -182,16 +182,32 @@ Strict rules:
 
 
 def ask(client, model, system, user, tool, max_tokens=4000):
+    # Some newer models don't accept a forced tool_choice, so we let the model
+    # choose ("auto"), tell it to use the tool, and fall back to parsing JSON text.
+    system = system + (f"\n\nAlways answer by calling the `{tool['name']}` tool exactly once. "
+                       "Do not reply with plain text.")
     for attempt in range(3):
         try:
             msg = client.messages.create(
                 model=model, max_tokens=max_tokens, system=system,
-                tools=[tool], tool_choice={"type": "tool", "name": tool["name"]},
+                tools=[tool], tool_choice={"type": "auto"},
                 messages=[{"role": "user", "content": user}],
             )
+            text = ""
             for block in msg.content:
                 if block.type == "tool_use":
                     return block.input
+                if block.type == "text":
+                    text += block.text
+            m = re.search(r"\{.*\}", text, re.S)
+            if m:
+                try:
+                    return json.loads(m.group(0))
+                except json.JSONDecodeError:
+                    pass
+            log("  ! Claude answered without using the tool; retrying…")
+        except anthropic.BadRequestError as e:
+            raise RuntimeError(f"Claude rejected the request: {e}") from e
         except anthropic.APIError as e:
             log(f"  ! Claude error ({e}); retrying…")
             time.sleep(5 * (attempt + 1))
