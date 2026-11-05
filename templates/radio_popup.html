@@ -2,7 +2,7 @@
 <html lang="{{ lang }}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ radio.name }} {{ radio.frequency }}</title>
 <link rel="icon" href="{{ root }}static/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="{{ root }}static/style.css">
+<link rel="stylesheet" href="{{ root }}static/style.css?v={{ build_time | replace(":", "") }}">
 </head>
 <body class="radio-popup">
   <p class="radio-live"><span class="live-dot"></span>{{ t.on_air }} · {{ radio.frequency }}</p>

@@ -15,7 +15,7 @@
 <link rel="icon" href="{{ root }}static/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Literata:opsz,wght@7..72,400;7..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ root }}static/style.css">
+<link rel="stylesheet" href="{{ root }}static/style.css?v={{ build_time | replace(":", "") }}">
 <script>try{var th=localStorage.getItem('ovnw-theme');if(th)document.documentElement.dataset.theme=th;localStorage.setItem('ovnw-lang','{{ lang }}')}catch(e){}</script>
 </head>
 <body data-root="{{ root }}" data-lang="{{ lang }}">
@@ -109,6 +109,6 @@
   </div>
 </div>
 {% endif %}
-<script src="{{ root }}static/app.js" defer></script>
+<script src="{{ root }}static/app.js?v={{ build_time | replace(":", "") }}" defer></script>
 </body>
 </html>
