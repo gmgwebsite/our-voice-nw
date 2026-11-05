@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% from "macros.html" import icon %}
+{% block title %}{{ t.archive }} — {{ site.name }}{% endblock %}
+{% block main %}
+<section class="wrap page-head"><h1>{{ t.archive }}</h1></section>
+<section class="wrap narrow">
+  {% for d, items in days.items() %}
+  <div class="arch-day">
+    <h2 class="arch-date">{{ d | date(lang, True) }}</h2>
+    <ul class="arch-list">
+      {% for a in items %}
+      <li><a href="{{ root }}{{ lang }}/a/{{ a.id }}.html"><span class="chip" style="--c: {{ cats[a.category].color }}">{{ cats[a.category][lang] }}</span><span class="arch-t">{{ a[lang].title }}</span></a></li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% else %}<p class="empty">{{ t.empty }}</p>{% endfor %}
+</section>
+{% endblock %}

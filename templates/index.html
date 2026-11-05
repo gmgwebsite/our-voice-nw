@@ -1,0 +1,34 @@
+{% extends "base.html" %}{% from "macros.html" import card, icon %}
+{% block main %}
+<section class="wrap dateline">
+  <p><span class="live-dot"></span>{{ today | date(lang, True) }}</p>
+  <h1 class="visually-hidden">{{ site.name }}</h1>
+</section>
+
+{% if top %}
+<section class="wrap hero" aria-label="{{ t.top }}">
+  <div class="hero-lead">{{ card(top[0], cats, lang, t, root, 'lg') }}</div>
+  <div class="hero-side">
+    <h2 class="sec-h small-h">{{ t.top }}</h2>
+    {% for a in top[1:] %}{{ card(a, cats, lang, t, root, 'sm', False) }}{% endfor %}
+  </div>
+</section>
+{% else %}
+<section class="wrap"><p class="empty">{{ t.empty }}</p></section>
+{% endif %}
+
+<section class="wrap quick-cats" aria-label="{{ t.sections }}">
+  {% for key, c in cats.items() %}
+  <a class="qc" href="{{ root }}{{ lang }}/c/{{ key }}.html" style="--c: {{ c.color }}">
+    <span class="qc-ic">{{ icon(c.icon, 22) }}</span><span>{{ c[lang] }}</span><span class="qc-n">{{ by_cat[key]|length }}</span>
+  </a>
+  {% endfor %}
+</section>
+
+{% if rest %}
+<section class="wrap">
+  <div class="sec-head"><h2 class="sec-h">{{ t.latest }}</h2><a class="more" href="{{ root }}{{ lang }}/archive.html">{{ t.archive }} {{ icon('arrow', 16) }}</a></div>
+  <div class="grid">{% for a in rest %}{{ card(a, cats, lang, t, root, 'md') }}{% endfor %}</div>
+</section>
+{% endif %}
+{% endblock %}

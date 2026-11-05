@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% from "macros.html" import card, icon %}
+{% block title %}{{ cats[cat][lang] }} — {{ site.name }}{% endblock %}
+{% block main %}
+<section class="cat-hero" style="--c: {{ cats[cat].color }}">
+  <div class="wrap"><span class="cat-hero-ic">{{ icon(cats[cat].icon, 36) }}</span><h1>{{ cats[cat][lang] }}</h1><p class="muted">{{ items|length }}</p></div>
+</section>
+<section class="wrap">
+  {% if items %}<div class="grid">{% for a in items %}{{ card(a, cats, lang, t, root, 'md') }}{% endfor %}</div>
+  {% else %}<p class="empty">{{ t.empty }}</p>{% endif %}
+</section>
+{% endblock %}
