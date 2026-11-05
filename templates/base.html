@@ -28,6 +28,7 @@
       <span class="logo-text">Our Voice <b>NW</b></span>
     </a>
     <div class="header-tools">
+      {% if radio.enabled and page != 'radio' %}<button class="radio-btn" data-radio-open aria-label="{{ t.listen }}">{{ icon('play', 16) }}<span>{{ t.radio }}</span></button>{% endif %}
       <button class="icon-btn" data-open-search aria-label="{{ t.search }}">{{ icon('search', 20) }}</button>
       <div class="lang-switch" role="group" aria-label="Language">
         <a href="{{ root }}ru/{{ alt_url[3:] }}" class="{{ 'on' if lang == 'ru' else '' }}" {% if lang == 'ru' %}aria-current="true"{% endif %} hreflang="ru" data-setlang="ru">RU</a>
@@ -40,6 +41,7 @@
   <nav class="cat-nav" aria-label="{{ t.sections }}">
     <div class="wrap cat-nav-row">
       <a href="{{ root }}{{ lang }}/index.html" class="{{ 'on' if page == 'home' else '' }}">{{ t.home }}</a>
+      {% if radio.enabled %}<a href="{{ root }}{{ lang }}/radio.html" class="nav-radio {{ 'on' if page == 'radio' else '' }}"><span class="live-dot sm"></span>{{ t.radio }} {{ radio.frequency }}</a>{% endif %}
       {% for key, c in cats.items() %}
       <a href="{{ root }}{{ lang }}/c/{{ key }}.html" class="{{ 'on' if page == key else '' }}" style="--c: {{ c.color }}"><span class="dot"></span>{{ c[lang] }}</a>
       {% endfor %}
@@ -56,6 +58,7 @@
     {% for key, c in cats.items() %}<a href="{{ root }}{{ lang }}/c/{{ key }}.html" style="--c: {{ c.color }}"><span class="dot"></span>{{ c[lang] }}</a>{% endfor %}
     <a href="{{ root }}{{ lang }}/archive.html">{{ t.archive }}</a>
     <a href="{{ root }}{{ lang }}/about.html">{{ t.about }}</a>
+    {% if radio.enabled %}<a href="{{ root }}{{ lang }}/radio.html"><span class="live-dot sm"></span>{{ t.radio }} {{ radio.frequency }}</a>{% endif %}
   </div>
 </div>
 
@@ -94,6 +97,18 @@
     <ul id="results" class="results" data-empty="{{ t.no_results }}"></ul>
   </div>
 </div>
+{% if radio.enabled and page != 'radio' %}
+<div class="radio-bar" id="radio-bar" hidden data-src="https://tunein.com/embed/player/{{ radio.tunein_id }}/" data-popup="{{ root }}{{ lang }}/radio-player.html">
+  <div class="wrap radio-bar-row">
+    <div class="radio-bar-label"><b><span class="live-dot"></span>{{ t.on_air }}</b><span class="muted small">{{ radio.name }} · {{ radio.frequency }}</span></div>
+    <div class="radio-bar-frame" id="radio-frame"></div>
+    <div class="radio-bar-tools">
+      <button class="icon-btn" data-radio-popout aria-label="{{ t.popout }}" title="{{ t.popout }}">{{ icon('external', 18) }}</button>
+      <button class="icon-btn" data-radio-close aria-label="{{ t.close_player }}" title="{{ t.close_player }}">{{ icon('close', 18) }}</button>
+    </div>
+  </div>
+</div>
+{% endif %}
 <script src="{{ root }}static/app.js" defer></script>
 </body>
 </html>

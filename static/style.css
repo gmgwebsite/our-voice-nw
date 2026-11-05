@@ -241,3 +241,43 @@ h1, h2, h3 { line-height: 1.18; letter-spacing: -0.015em; margin: 0; }
 .cover.has-photo::after { opacity: 1; background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.35)); }
 .cover.has-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none; }
 .cover-md.has-photo { aspect-ratio: 16 / 9; }
+
+/* ---------- Radio ---------- */
+.live-dot.sm { width: 7px; height: 7px; box-shadow: 0 0 0 3px color-mix(in srgb, #dc2626 20%, transparent); }
+.radio-bar .live-dot, .radio-live .live-dot, .nav-radio .live-dot { background: #dc2626; box-shadow: 0 0 0 4px color-mix(in srgb, #dc2626 22%, transparent); animation: pulse 1.8s ease-in-out infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, #dc2626 0%, transparent); } }
+.nav-radio { font-weight: 600 !important; color: var(--ink) !important; }
+.radio-btn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px 0 11px; border-radius: 999px; background: #dc2626; color: #fff; font-weight: 600; font-size: .86rem; margin-right: 4px; transition: transform .15s, background .15s; }
+.radio-btn:hover { background: #b91c1c; transform: translateY(-1px); }
+@media (max-width: 560px) { .radio-btn span { display: none; } .radio-btn { width: 36px; padding: 0; justify-content: center; } }
+.radio-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -8px 30px rgba(0,0,0,.12); padding-bottom: env(safe-area-inset-bottom, 0px); animation: rise .25s ease-out; }
+@keyframes rise { from { transform: translateY(100%); } }
+.radio-bar-row { display: flex; align-items: center; gap: 16px; min-height: 96px; padding-top: 8px; padding-bottom: 8px; }
+.radio-bar-label { display: flex; flex-direction: column; gap: 2px; min-width: 150px; }
+.radio-bar-label b { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; }
+.radio-bar-label .live-dot { display: inline-block; }
+.radio-bar-frame { flex: 1; min-width: 0; height: 100px; }
+.radio-bar-frame iframe { width: 100%; height: 100px; border: 0; display: block; }
+.radio-bar-tools { display: flex; gap: 4px; }
+body.radio-on { padding-bottom: 116px; }
+@media (max-width: 640px) { .radio-bar-label { display: none; } .radio-bar-row { gap: 8px; } }
+.radio-hero { background: linear-gradient(135deg, #7f1d1d, #b91c1c 55%, #ea580c); color: #fff; padding: 44px 0 36px; }
+.radio-hero-row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+.radio-art { position: relative; width: 132px; height: 132px; border-radius: 28px; background: rgba(255,255,255,.14); display: grid; place-items: center; flex: none; backdrop-filter: blur(6px); }
+.radio-freq { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); background: #fff; color: #b91c1c; font-weight: 800; font-size: .85rem; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+.radio-info { min-width: 0; flex: 1; }
+.radio-info h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; }
+.radio-info .muted { color: rgba(255,255,255,.8); margin: 6px 0 0; }
+.radio-intro { margin: 12px 0 0; max-width: 560px; color: rgba(255,255,255,.92); }
+.radio-live { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: .8rem; }
+.radio-hero .live-dot { background: #fff; box-shadow: 0 0 0 4px rgba(255,255,255,.3); animation: none; }
+.radio-page { padding-top: 28px; padding-bottom: 40px; }
+.radio-embed { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.radio-embed iframe { width: 100%; height: 100px; border: 0; display: block; }
+.radio-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 14px; }
+.btn-ghost { background: transparent !important; color: var(--ink) !important; border: 1px solid var(--line); }
+.radio-popup { margin: 0; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.radio-popup iframe { width: 100%; height: 100px; border: 0; }
+.radio-popup .radio-live .live-dot { display: inline-block; }
+.nav-radio.on { color: var(--bg) !important; }
+@media (max-width: 560px) { .radio-art { width: 84px; height: 84px; border-radius: 20px; } .radio-art svg { width: 40px; height: 40px; } .radio-hero { padding: 30px 0 28px; } }

@@ -68,3 +68,31 @@
     if ((e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey))) && modal && modal.hidden && !/input|textarea/i.test(d.activeElement.tagName)) { e.preventDefault(); openSearch(); }
   });
 })();
+
+// Radio player (TuneIn embed is only loaded when the reader presses play)
+(function () {
+  var d = document, bar = d.getElementById('radio-bar');
+  function popout(url) {
+    var w = window.open(url, 'ovnw-radio', 'width=420,height=220,menubar=no,toolbar=no,location=no,status=no');
+    if (w) { w.focus(); return true; } return false;
+  }
+  function closeBar() { if (!bar) return; bar.hidden = true; d.getElementById('radio-frame').innerHTML = ''; d.body.classList.remove('radio-on'); }
+  d.querySelectorAll('[data-radio-open]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (!bar) return;
+      var f = d.getElementById('radio-frame');
+      if (!f.firstChild) {
+        var i = d.createElement('iframe'); i.src = bar.dataset.src; i.allow = 'autoplay'; i.title = 'Radio'; i.setAttribute('scrolling', 'no');
+        f.appendChild(i);
+      }
+      bar.hidden = false; d.body.classList.add('radio-on');
+    });
+  });
+  d.querySelectorAll('[data-radio-popout]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var url = b.dataset.popup || (bar && bar.dataset.popup);
+      if (url && popout(url)) closeBar();
+    });
+  });
+  d.querySelectorAll('[data-radio-close]').forEach(function (b) { b.addEventListener('click', closeBar); });
+})();
