@@ -28,7 +28,7 @@ pipeline:
   stories_per_day: 4          # 3–4 recommended
   # true  = new stories go live immediately
   # false = stories are proposed as a GitHub "pull request" you approve with one click
-  auto_publish: false
+  auto_publish: true
   # Claude model used for selecting and writing. Change to a newer model any time.
   model: "claude-sonnet-5-5"
   max_age_hours: 36           # ignore items older than this
