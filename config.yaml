@@ -11,7 +11,7 @@ site:
   tagline:
     ru: "Новости для русско- и украиноязычных жителей Северо-Запада США"
     uk: "Новини для російсько- та україномовних мешканців Північного Заходу США"
-  contact_email: "editor@example.org"
+  contact_email: "timur@slavicfamily.org"
 
 # ---------- Daily robot settings ----------
 pipeline:

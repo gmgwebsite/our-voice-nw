@@ -135,17 +135,16 @@ SELECT_TOOL = {
     },
 }
 
-LANG_BLOCK = {
-    "type": "object",
-    "properties": {
-        "title": {"type": "string", "description": "Headline, max ~90 characters, no clickbait"},
-        "summary": {"type": "string", "description": "1–2 sentence lede with the key fact"},
-        "body": {"type": "array", "items": {"type": "string"}, "description": "3–5 short paragraphs"},
-        "why": {"type": "string", "description": "2–3 sentences: why this matters to our readers / what to do"},
-    },
-    "required": ["title", "summary", "body", "why"],
-}
+def _lang_fields(lang: str, name: str) -> dict:
+    return {
+        f"{lang}_title": {"type": "string", "description": f"{name} headline, max ~90 characters, no clickbait"},
+        f"{lang}_summary": {"type": "string", "description": f"{name}: 1-2 sentence lede with the key fact"},
+        f"{lang}_body": {"type": "string", "description": f"{name}: 3-5 short paragraphs separated by a blank line"},
+        f"{lang}_why": {"type": "string", "description": f"{name}: 2-3 sentences on why this matters to our readers / what to do"},
+    }
 
+
+# Flat string fields only: newer models fill these far more reliably than nested objects.
 WRITE_TOOL = {
     "name": "publish_article",
     "description": "Publish the finished bilingual article, or skip it if the source is insufficient.",
@@ -155,12 +154,36 @@ WRITE_TOOL = {
             "skip": {"type": "boolean", "description": "true if the source text is too thin, unclear or not newsworthy"},
             "skip_reason": {"type": "string"},
             "slug": {"type": "string", "description": "short latin-letter url slug, e.g. tps-ukraine-extension"},
-            "ru": LANG_BLOCK,
-            "uk": LANG_BLOCK,
+            **_lang_fields("ru", "Russian"),
+            **_lang_fields("uk", "Ukrainian"),
         },
         "required": ["skip"],
     },
 }
+
+
+def unflatten(out: dict) -> dict:
+    """Turn ru_title/ru_body/... fields into {"ru": {...}, "uk": {...}}."""
+    for lang in ("ru", "uk"):
+        if isinstance(out.get(lang), dict):
+            continue
+        if isinstance(out.get(lang), str):  # sometimes a JSON string
+            try:
+                v = json.loads(out[lang])
+                if isinstance(v, dict):
+                    out[lang] = v
+                    continue
+            except json.JSONDecodeError:
+                pass
+        body = out.get(f"{lang}_body", "")
+        out[lang] = {
+            "title": (out.get(f"{lang}_title") or "").strip(),
+            "summary": (out.get(f"{lang}_summary") or "").strip(),
+            "body": [x.strip() for x in re.split(r"\n\s*\n|\n", body) if x.strip()] if isinstance(body, str) else body,
+            "why": (out.get(f"{lang}_why") or "").strip(),
+        }
+    return out
+
 
 WRITER_RULES = """You are the editor of "Our Voice NW", a news site for Russian- and Ukrainian-speaking
 people in the US Pacific Northwest. Write ONE short news article in BOTH Russian (ru) and Ukrainian (uk)
@@ -292,6 +315,8 @@ def main():
                 log(f"  ! {e}")
                 out = None
                 break
+            if not out.get("skip"):
+                out = unflatten(out)
             if out.get("skip") or valid_article(out):
                 break
             log("  ! malformed article from Claude; asking again…")
