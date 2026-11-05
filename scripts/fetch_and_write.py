@@ -214,6 +214,25 @@ def ask(client, model, system, user, tool, max_tokens=4000):
     raise RuntimeError("Claude did not return a result")
 
 
+def valid_article(out) -> bool:
+    """True only if both languages have a proper title, summary, body list and why."""
+    for lang in ("ru", "uk"):
+        b = out.get(lang) if isinstance(out, dict) else None
+        if not isinstance(b, dict):
+            return False
+        if not all(isinstance(b.get(k), str) and b[k].strip() for k in ("title", "summary", "why")):
+            return False
+        body = b.get("body")
+        if isinstance(body, str):  # tolerate a single string by splitting paragraphs
+            body = [x.strip() for x in body.split("\n") if x.strip()]
+            b["body"] = body
+        if not (isinstance(body, list) and body and all(isinstance(x, str) for x in body)):
+            return False
+        if "<parameter" in b["title"] or "<parameter" in " ".join(body):
+            return False
+    return True
+
+
 def slugify(s: str) -> str:
     s = re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
     return s[:60] or "story"
@@ -263,12 +282,22 @@ def main():
         cat = p["category"] if p["category"] in cats else "local"
         log(f"Writing: {c['title']}")
         text = full_text(c["url"], c["summary"])
-        out = ask(client, model, WRITER_RULES,
-                  f"Source: {c['source']}\nOriginal headline: {c['title']}\nPublished: {c['published']}\n"
-                  f"URL: {c['url']}\nSection: {cats[cat]['ru']}\n\nSOURCE TEXT:\n{text}",
-                  WRITE_TOOL)
-        if out.get("skip") or "ru" not in out or "uk" not in out:
-            log(f"  – skipped: {out.get('skip_reason', 'insufficient source')}")
+        prompt = (f"Source: {c['source']}\nOriginal headline: {c['title']}\nPublished: {c['published']}\n"
+                  f"URL: {c['url']}\nSection: {cats[cat]['ru']}\n\nSOURCE TEXT:\n{text}")
+        out = None
+        for attempt in range(3):
+            try:
+                out = ask(client, model, WRITER_RULES, prompt, WRITE_TOOL)
+            except RuntimeError as e:
+                log(f"  ! {e}")
+                out = None
+                break
+            if out.get("skip") or valid_article(out):
+                break
+            log("  ! malformed article from Claude; asking again…")
+            out = None
+        if not out or out.get("skip") or not valid_article(out):
+            log(f"  – skipped: {(out or {}).get('skip_reason', 'no valid article')}")
             continue
         aid = f"{today}-{slugify(out.get('slug') or c['title'])}"
         art = {

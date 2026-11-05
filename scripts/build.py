@@ -89,7 +89,13 @@ def fmt_date(d: str, lang: str, weekday: bool = False) -> str:
 def load_articles() -> list[dict]:
     arts = []
     for p in sorted((ROOT / "content" / "articles").glob("*.json")):
-        a = json.loads(p.read_text(encoding="utf-8"))
+        try:
+            a = json.loads(p.read_text(encoding="utf-8"))
+            assert all(isinstance(a[l], dict) and isinstance(a[l]["body"], list) and a[l]["title"]
+                       for l in LANGS)
+        except Exception as e:  # never let one bad file break the whole site
+            print(f"  ! skipping malformed article {p.name}: {e}")
+            continue
         a.setdefault("id", p.stem)
         arts.append(a)
     # newest day first; within a day, rank 1 (lead story) first
