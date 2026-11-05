@@ -1,0 +1,57 @@
+{% extends "base.html" %}{% from "macros.html" import card, icon, cover %}
+{% set x = a[lang] %}{% set c = cats[a.category] %}
+{% block title %}{{ x.title }} — {{ site.name }}{% endblock %}
+{% block desc %}{{ x.summary }}{% endblock %}
+{% block main %}
+<article class="wrap story">
+  <header class="story-head">
+    <nav class="crumbs small"><a href="{{ root }}{{ lang }}/index.html">{{ t.home }}</a><span>/</span><a href="{{ root }}{{ lang }}/c/{{ a.category }}.html">{{ c[lang] }}</a></nav>
+    <span class="chip" style="--c: {{ c.color }}">{{ c[lang] }}</span>
+    <h1 class="story-title">{{ x.title }}</h1>
+    <p class="story-lede">{{ x.summary }}</p>
+    <div class="meta story-meta">
+      <time datetime="{{ a.date }}">{{ a.date | date(lang) }}</time><span>·</span>
+      <span>{{ icon('clock', 15) }} {{ a._rt[lang] }} {{ t.min }}</span><span>·</span>
+      <span>{{ t.source }}: <a href="{{ a.source.url }}" rel="noopener nofollow" target="_blank">{{ a.source.name }}</a></span>
+      <a class="lang-pill" href="{{ root }}{{ alt_url }}" data-setlang="{{ other }}">{{ t.other_lang }}</a>
+    </div>
+  </header>
+
+  {{ cover(a, cats, lang, 'lg') }}
+
+  <div class="story-grid">
+    <div class="prose">
+      {% for p in x.body %}<p>{{ p }}</p>{% endfor %}
+
+      {% if x.why %}
+      <aside class="why" style="--c: {{ c.color }}">
+        <p class="why-h">{{ icon('spark', 18) }} {{ t.why }}</p>
+        <p>{{ x.why }}</p>
+      </aside>
+      {% endif %}
+
+      <div class="source-box">
+        <div><p class="small muted">{{ t.source }}</p><p class="source-name">{{ a.source.name }}</p>{% if a.source.title %}<p class="small muted">«{{ a.source.title }}»</p>{% endif %}</div>
+        <a class="btn" href="{{ a.source.url }}" target="_blank" rel="noopener nofollow">{{ t.read_original }} {{ icon('external', 16) }}</a>
+      </div>
+      <p class="ai-note small muted">{{ t.ai_note }} <a href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a></p>
+    </div>
+
+    <aside class="share" aria-label="{{ t.share }}">
+      <p class="small muted">{{ t.share }}</p>
+      {% set u = canonical | urlencode %}{% set tt = x.title | urlencode %}
+      <a class="icon-btn" href="https://t.me/share/url?url={{ u }}&text={{ tt }}" target="_blank" rel="noopener" aria-label="Telegram">{{ icon('telegram', 20) }}</a>
+      <a class="icon-btn" href="https://wa.me/?text={{ tt }}%20{{ u }}" target="_blank" rel="noopener" aria-label="WhatsApp">{{ icon('whatsapp', 20) }}</a>
+      <a class="icon-btn" href="https://www.facebook.com/sharer/sharer.php?u={{ u }}" target="_blank" rel="noopener" aria-label="Facebook">{{ icon('facebook', 20) }}</a>
+      <button class="icon-btn" data-copy data-copied="{{ t.copied }}" aria-label="{{ t.copy }}">{{ icon('link', 20) }}</button>
+    </aside>
+  </div>
+</article>
+
+{% if related %}
+<section class="wrap related">
+  <h2 class="sec-h">{{ t.related }}</h2>
+  <div class="grid grid-3">{% for b in related %}{{ card(b, cats, lang, t, root, 'md') }}{% endfor %}</div>
+</section>
+{% endif %}
+{% endblock %}

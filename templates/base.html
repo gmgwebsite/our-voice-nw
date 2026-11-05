@@ -1,0 +1,98 @@
+{% from "macros.html" import icon %}<!doctype html>
+<html lang="{{ lang }}" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ site.name }} — {{ tagline }}{% endblock %}</title>
+<meta name="description" content="{% block desc %}{{ tagline }}{% endblock %}">
+{% if canonical %}<link rel="canonical" href="{{ canonical }}">{% endif %}
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ self.title() }}">
+<meta property="og:description" content="{{ self.desc() }}">
+<meta name="theme-color" content="#0b3d36">
+<link rel="alternate" type="application/rss+xml" title="{{ site.name }}" href="{{ root }}{{ lang }}/feed.xml">
+<link rel="icon" href="{{ root }}static/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Literata:opsz,wght@7..72,400;7..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ root }}static/style.css">
+<script>try{var th=localStorage.getItem('ovnw-theme');if(th)document.documentElement.dataset.theme=th;localStorage.setItem('ovnw-lang','{{ lang }}')}catch(e){}</script>
+</head>
+<body data-root="{{ root }}" data-lang="{{ lang }}">
+<a class="skip" href="#main">{{ t.skip }}</a>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="logo" href="{{ root }}{{ lang }}/index.html" aria-label="{{ site.name }}">
+      <span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 32 32" width="30" height="30"><rect width="32" height="32" rx="9" fill="currentColor"/><path d="M6 23 13 12l4 6 3-4 6 9z" fill="var(--bg)"/><circle cx="22.5" cy="9.5" r="2.5" fill="var(--accent)"/></svg></span>
+      <span class="logo-text">Our Voice <b>NW</b></span>
+    </a>
+    <div class="header-tools">
+      <button class="icon-btn" data-open-search aria-label="{{ t.search }}">{{ icon('search', 20) }}</button>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <a href="{{ root }}ru/{{ alt_url[3:] }}" class="{{ 'on' if lang == 'ru' else '' }}" {% if lang == 'ru' %}aria-current="true"{% endif %} hreflang="ru" data-setlang="ru">RU</a>
+        <a href="{{ root }}uk/{{ alt_url[3:] }}" class="{{ 'on' if lang == 'uk' else '' }}" {% if lang == 'uk' %}aria-current="true"{% endif %} hreflang="uk" data-setlang="uk">UA</a>
+      </div>
+      <button class="icon-btn" data-theme-toggle aria-label="{{ t.theme }}"><span class="i-sun">{{ icon('sun', 20) }}</span><span class="i-moon">{{ icon('moon', 20) }}</span></button>
+      <button class="icon-btn only-mobile" data-open-menu aria-label="{{ t.menu }}" aria-expanded="false">{{ icon('menu', 22) }}</button>
+    </div>
+  </div>
+  <nav class="cat-nav" aria-label="{{ t.sections }}">
+    <div class="wrap cat-nav-row">
+      <a href="{{ root }}{{ lang }}/index.html" class="{{ 'on' if page == 'home' else '' }}">{{ t.home }}</a>
+      {% for key, c in cats.items() %}
+      <a href="{{ root }}{{ lang }}/c/{{ key }}.html" class="{{ 'on' if page == key else '' }}" style="--c: {{ c.color }}"><span class="dot"></span>{{ c[lang] }}</a>
+      {% endfor %}
+      <a href="{{ root }}{{ lang }}/archive.html" class="{{ 'on' if page == 'archive' else '' }}">{{ t.archive }}</a>
+    </div>
+  </nav>
+</header>
+
+<div class="drawer" id="drawer" hidden>
+  <div class="drawer-panel">
+    <button class="icon-btn drawer-close" data-close-menu aria-label="Close">{{ icon('close', 22) }}</button>
+    <p class="drawer-h">{{ t.sections }}</p>
+    <a href="{{ root }}{{ lang }}/index.html">{{ t.home }}</a>
+    {% for key, c in cats.items() %}<a href="{{ root }}{{ lang }}/c/{{ key }}.html" style="--c: {{ c.color }}"><span class="dot"></span>{{ c[lang] }}</a>{% endfor %}
+    <a href="{{ root }}{{ lang }}/archive.html">{{ t.archive }}</a>
+    <a href="{{ root }}{{ lang }}/about.html">{{ t.about }}</a>
+  </div>
+</div>
+
+{% if has_samples %}<div class="demo-bar">{{ t.demo }}</div>{% endif %}
+<main id="main">
+{% block main %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div>
+      <a class="logo" href="{{ root }}{{ lang }}/index.html"><span class="logo-text">Our Voice <b>NW</b></span></a>
+      <p class="muted">{{ tagline }}</p>
+      <p class="muted small">{{ t.updated }} · {{ t.rights }}</p>
+    </div>
+    <div>
+      <p class="footer-h">{{ t.sections }}</p>
+      <ul class="footer-links">{% for key, c in cats.items() %}<li><a href="{{ root }}{{ lang }}/c/{{ key }}.html">{{ c[lang] }}</a></li>{% endfor %}</ul>
+    </div>
+    <div>
+      <p class="footer-h">{{ site.name }}</p>
+      <ul class="footer-links">
+        <li><a href="{{ root }}{{ lang }}/about.html">{{ t.about }}</a></li>
+        <li><a href="{{ root }}{{ lang }}/archive.html">{{ t.archive }}</a></li>
+        <li><a href="{{ root }}{{ lang }}/feed.xml">{{ t.rss }}</a></li>
+        <li><a href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap footer-bottom small muted">© {{ build_time[:4] }} {{ site.name }}</div>
+</footer>
+
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="{{ t.search }}">
+  <div class="search-panel">
+    <div class="search-bar">{{ icon('search', 20) }}<input id="q" type="search" placeholder="{{ t.search_ph }}" autocomplete="off"><button class="icon-btn" data-close-search aria-label="Close">{{ icon('close', 20) }}</button></div>
+    <ul id="results" class="results" data-empty="{{ t.no_results }}"></ul>
+  </div>
+</div>
+<script src="{{ root }}static/app.js" defer></script>
+</body>
+</html>
