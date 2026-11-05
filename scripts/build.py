@@ -44,7 +44,7 @@ T = {  # interface strings
         "empty": "Здесь пока нет материалов.", "sections": "Разделы",
         "theme": "Сменить тему", "menu": "Меню", "updated": "Обновляется ежедневно",
         "rights": "Все права на исходные материалы принадлежат их авторам.",
-        "skip": "Перейти к содержанию", "photo": "Фото", "photo_note": "Иллюстративное фото", "demo": "Демо-режим: показаны примеры материалов.", "back_top": "Наверх", "rss": "RSS",
+        "skip": "Перейти к содержанию", "photo": "Фото", "photo_note": "Иллюстративное фото", "demo": "Демо-режим: показаны примеры материалов.", "back_top": "Наверх", "rss": "RSS", "radio": "Радио", "listen": "Слушать радио", "on_air": "В эфире", "popout": "Слушать в отдельном окне", "close_player": "Закрыть плеер", "radio_intro": "Прямой эфир радио для славянской общины Северо-Запада. Нажмите «Слушать», чтобы включить трансляцию.", "radio_tip": "Совет: откройте плеер в отдельном окне — радио будет играть, пока вы читаете новости.", "radio_error": "Если трансляция не запускается, попробуйте позже или откройте станцию на TuneIn.", "open_tunein": "Открыть на TuneIn",
     },
     "uk": {
         "home": "Головна", "latest": "Свіжі новини", "top": "Головне сьогодні",
@@ -58,7 +58,7 @@ T = {  # interface strings
         "empty": "Тут поки немає матеріалів.", "sections": "Розділи",
         "theme": "Змінити тему", "menu": "Меню", "updated": "Оновлюється щодня",
         "rights": "Усі права на вихідні матеріали належать їхнім авторам.",
-        "skip": "Перейти до змісту", "photo": "Фото", "photo_note": "Ілюстративне фото", "demo": "Демо-режим: показано приклади матеріалів.", "back_top": "Вгору", "rss": "RSS",
+        "skip": "Перейти до змісту", "photo": "Фото", "photo_note": "Ілюстративне фото", "demo": "Демо-режим: показано приклади матеріалів.", "back_top": "Вгору", "rss": "RSS", "radio": "Радіо", "listen": "Слухати радіо", "on_air": "В ефірі", "popout": "Слухати в окремому вікні", "close_player": "Закрити плеєр", "radio_intro": "Прямий ефір радіо для слов'янської громади Північного Заходу. Натисніть «Слухати», щоб увімкнути трансляцію.", "radio_tip": "Порада: відкрийте плеєр в окремому вікні — радіо гратиме, поки ви читаєте новини.", "radio_error": "Якщо трансляція не запускається, спробуйте пізніше або відкрийте станцію на TuneIn.", "open_tunein": "Відкрити на TuneIn",
     },
 }
 
@@ -137,7 +137,7 @@ def main() -> None:
     sitemap = []
     for lang in LANGS:
         other = "uk" if lang == "ru" else "ru"
-        base = dict(site=site, cats=cats, lang=lang, other=other, t=T[lang],
+        base = dict(site=site, cats=cats, lang=lang, other=other, t=T[lang], radio=cfg.get("radio") or {},
                     tagline=site["tagline"][lang], build_time=build_time,
                     has_samples=any(a.get("sample") for a in articles))
         for a in articles:
@@ -169,6 +169,9 @@ def main() -> None:
                alt_url=f"{other}/archive.html")
         render("about.html", pg("about.html"), **base, page="about", about=ABOUT[lang],
                alt_url=f"{other}/about.html")
+        if (cfg.get("radio") or {}).get("enabled"):
+            render("radio.html", pg("radio.html"), **base, page="radio", alt_url=f"{other}/radio.html")
+            render("radio_popup.html", pg("radio-player.html"), **base, page="radio")
 
         for a in articles:
             related = [b for b in articles if b is not a and b["category"] == a["category"]][:3]

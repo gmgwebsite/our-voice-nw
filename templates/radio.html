@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% from "macros.html" import icon %}
+{% block title %}{{ t.radio }} {{ radio.frequency }} — {{ site.name }}{% endblock %}
+{% block desc %}{{ t.radio_intro }}{% endblock %}
+{% block main %}
+<section class="radio-hero">
+  <div class="wrap radio-hero-row">
+    <div class="radio-art" aria-hidden="true">{{ icon('radio', 64) }}<span class="radio-freq">{{ radio.frequency }}</span></div>
+    <div class="radio-info">
+      <p class="radio-live"><span class="live-dot"></span>{{ t.on_air }}</p>
+      <h1>{{ radio.name }}</h1>
+      <p class="muted">{{ radio.frequency }} · {{ radio.city }}</p>
+      <p class="radio-intro">{{ t.radio_intro }}</p>
+    </div>
+  </div>
+</section>
+<section class="wrap narrow radio-page">
+  <div class="radio-embed">
+    <iframe src="https://tunein.com/embed/player/{{ radio.tunein_id }}/" title="{{ radio.name }}" allow="autoplay" loading="lazy" scrolling="no" frameborder="0"></iframe>
+  </div>
+  <div class="radio-actions">
+    <button class="btn" data-radio-popout data-popup="{{ root }}{{ lang }}/radio-player.html">{{ icon('external', 16) }} {{ t.popout }}</button>
+    <a class="btn btn-ghost" href="https://tunein.com/radio/{{ radio.tunein_id }}/" target="_blank" rel="noopener">{{ t.open_tunein }}</a>
+  </div>
+  <p class="small muted">{{ t.radio_tip }}</p>
+  <p class="small muted">{{ t.radio_error }}</p>
+</section>
+{% endblock %}

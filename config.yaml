@@ -13,6 +13,16 @@ site:
     uk: "Новини для російсько- та україномовних мешканців Північного Заходу США"
   contact_email: "timur@slavicfamily.org"
 
+# ---------- Live radio player ----------
+# The player uses TuneIn's official embeddable player.
+# tunein_id is the "s12345" code at the end of the station's TuneIn address.
+radio:
+  enabled: true
+  tunein_id: "s55604"
+  name: "The Great Media Radio"
+  frequency: "1130 AM"
+  city: "Portland, OR"
+
 # ---------- Daily robot settings ----------
 pipeline:
   stories_per_day: 4          # 3–4 recommended
