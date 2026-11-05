@@ -35,5 +35,21 @@
   "generated": {
     "model": "claude-sonnet-5-5",
     "at": "2026-11-05T04:29:41+00:00"
+  },
+  "image_queries": [
+    "Amazon Spheres Seattle",
+    "Amazon headquarters Seattle",
+    "Seattle skyline South Lake Union"
+  ],
+  "image_checked": true,
+  "image_version": 2,
+  "image": {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/Amazon_spheres_W.jpg/1920px-Amazon_spheres_W.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "page": "https://commons.wikimedia.org/wiki/File:Amazon_spheres_W.jpg",
+    "author": "Sea Cow",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "title": "Amazon spheres W",
+    "query": "Amazon Spheres Seattle"
   }
 }

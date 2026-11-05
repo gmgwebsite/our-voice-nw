@@ -33,5 +33,21 @@
   "generated": {
     "model": "claude-sonnet-5-5",
     "at": "2026-11-05T04:29:28+00:00"
+  },
+  "image_queries": [
+    "Spokane Washington skyline",
+    "Spokane River Falls Riverfront Park",
+    "Spokane County Courthouse"
+  ],
+  "image_checked": true,
+  "image_version": 2,
+  "image": {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Spokane_skyline_panorama_%28Aug_2019%29.jpg/1920px-Spokane_skyline_panorama_%28Aug_2019%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "page": "https://commons.wikimedia.org/wiki/File:Spokane_skyline_panorama_(Aug_2019).jpg",
+    "author": "SounderBruce",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "title": "Spokane skyline panorama (Aug 2019)",
+    "query": "Spokane Washington skyline"
   }
 }

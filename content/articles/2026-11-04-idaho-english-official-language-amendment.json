@@ -35,5 +35,21 @@
   "generated": {
     "model": "claude-sonnet-5-5",
     "at": "2026-11-05T04:29:15+00:00"
+  },
+  "image_queries": [
+    "Idaho State Capitol",
+    "Idaho State Capitol Boise",
+    "Flag of Idaho"
+  ],
+  "image_checked": true,
+  "image_version": 2,
+  "image": {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/House_of_Representatives_Chamber%2C_Idaho_State_Capitol.jpg/1920px-House_of_Representatives_Chamber%2C_Idaho_State_Capitol.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "page": "https://commons.wikimedia.org/wiki/File:House_of_Representatives_Chamber,_Idaho_State_Capitol.jpg",
+    "author": "Frank Schulenburg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "title": "House of Representatives Chamber, Idaho State Capitol",
+    "query": "Idaho State Capitol"
   }
 }
