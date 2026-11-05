@@ -17,6 +17,25 @@
 <section class="wrap"><p class="empty">{{ t.empty }}</p></section>
 {% endif %}
 
+{% if radio.enabled %}
+<section class="wrap home-radio" aria-label="{{ t.radio }}">
+  <div class="home-radio-card">
+    <div class="home-radio-info">
+      <p class="radio-live"><span class="live-dot"></span>{{ t.on_air }}</p>
+      <h2>{{ radio.name }}</h2>
+      <p class="small">{{ t.radio_intro }}</p>
+      <div class="home-radio-links">
+        <button class="btn-light" data-radio-popout data-popup="{{ root }}{{ lang }}/radio-player.html">{{ icon('external', 15) }} {{ t.popout }}</button>
+        <a href="{{ root }}{{ lang }}/radio.html">{{ t.radio }} {{ icon('arrow', 15) }}</a>
+      </div>
+    </div>
+    <div class="home-radio-player">
+      <iframe src="https://tunein.com/embed/player/{{ radio.tunein_id }}/" title="{{ radio.name }}" allow="autoplay" loading="lazy" scrolling="no" frameborder="0"></iframe>
+    </div>
+  </div>
+</section>
+{% endif %}
+
 <section class="wrap quick-cats" aria-label="{{ t.sections }}">
   {% for key, c in cats.items() %}
   <a class="qc" href="{{ root }}{{ lang }}/c/{{ key }}.html" style="--c: {{ c.color }}">

@@ -19,8 +19,8 @@ site:
 radio:
   enabled: true
   tunein_id: "s55604"
-  name: "The Great Media Radio"
-  frequency: "1130 AM"
+  name: "KXPD 1040 AM"
+  frequency: "1040 AM"
   city: "Portland, OR"
 
 # ---------- Daily robot settings ----------
