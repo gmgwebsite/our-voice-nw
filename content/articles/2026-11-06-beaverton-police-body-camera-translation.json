@@ -1,0 +1,53 @@
+{
+  "id": "2026-11-06-beaverton-police-body-camera-translation",
+  "date": "2026-11-06",
+  "rank": 4,
+  "category": "services",
+  "source": {
+    "name": "KATU 2 (Portland)",
+    "url": "https://katu.com/news/local/beaverton-police-add-new-body-camera-tech-to-translate-conversations-in-real-time",
+    "title": "Beaverton Police add new body camera tech to translate conversations in real-time"
+  },
+  "ru": {
+    "title": "Полиция Beaverton получила камеры с переводом на 50+ языков в реальном времени",
+    "summary": "Полицейское управление Beaverton в Орегоне внедряет нательные камеры, которые переводят разговор офицера с жителем более чем на 50 языков.",
+    "body": [
+      "Полицейское управление города Beaverton (Beaverton Police Department) в штате Орегон начинает использовать новые нательные камеры с функцией перевода. Как сообщает телеканал KATU, с их помощью офицеры могут общаться с людьми более чем на 50 языках.",
+      "Камеры переводят разговор в обе стороны: и слова полицейского, и ответ собеседника. Благодаря этому офицеру не нужно ждать, пока переводчик ответит на звонок и подключится к разговору.",
+      "По данным источника, технология уже работает в реальных условиях. Полиция Beaverton опубликовала видео недавнего общения с её использованием.",
+      "В управлении отмечают, что новинка поможет офицерам и дальше обслуживать разнообразное сообщество города. Какие именно языки поддерживаются и как будут храниться записи, в сообщении не уточняется."
+    ],
+    "why": "Для тех, кто в Орегоне только осваивает английский, это может сделать разговор с полицией понятнее и быстрее. Список поддерживаемых языков в источнике не приводится, поэтому за подробностями стоит обращаться напрямую в полицию Beaverton."
+  },
+  "uk": {
+    "title": "Поліція Beaverton отримала камери з перекладом понад 50 мовами наживо",
+    "summary": "Поліцейське управління Beaverton в Орегоні впроваджує нагрудні камери, які перекладають розмову офіцера з мешканцем більш ніж 50 мовами.",
+    "body": [
+      "Поліцейське управління міста Beaverton (Beaverton Police Department) в штаті Орегон починає користуватися новими нагрудними камерами з функцією перекладу. Як повідомляє телеканал KATU, за їхньою допомогою офіцери можуть спілкуватися з людьми понад 50 мовами.",
+      "Камери перекладають розмову в обидва боки: і слова поліцейського, і відповідь співрозмовника. Тож офіцерові не доводиться чекати, поки перекладач відповість на дзвінок і долучиться до розмови.",
+      "За даними джерела, технологія вже працює в реальних умовах. Поліція Beaverton оприлюднила відео нещодавньої взаємодії, під час якої її застосували.",
+      "У відомстві зазначають, що новинка допоможе офіцерам і надалі обслуговувати різноманітну спільноту міста. Які саме мови підтримуються і як зберігатимуться записи, у повідомленні не уточнюється."
+    ],
+    "why": "Для тих, хто в Орегоні лише опановує англійську, це може зробити розмову з поліцією зрозумілішою та швидшою. Перелік підтримуваних мов у джерелі не наведено, тому за подробицями варто звертатися безпосередньо до поліції Beaverton."
+  },
+  "generated": {
+    "model": "claude-sonnet-5-5",
+    "at": "2026-11-06T15:02:08+00:00"
+  },
+  "image_queries": [
+    "Beaverton Oregon",
+    "Beaverton City Hall Oregon",
+    "Beaverton Oregon skyline"
+  ],
+  "image_checked": true,
+  "image_version": 2,
+  "image": {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/3rd_St_between_Main_and_Angel_%28Beaverton%2C_Oregon_Historical_Photo_Gallery%29_%28261%29.jpg/1920px-3rd_St_between_Main_and_Angel_%28Beaverton%2C_Oregon_Historical_Photo_Gallery%29_%28261%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "page": "https://commons.wikimedia.org/wiki/File:3rd_St_between_Main_and_Angel_(Beaverton,_Oregon_Historical_Photo_Gallery)_(261).jpg",
+    "author": "Unknown photographer",
+    "license": "Public domain",
+    "license_url": "",
+    "title": "3rd St between Main and Angel (Beaverton, Oregon Historical Photo Gallery) (261)",
+    "query": "Beaverton Oregon"
+  }
+}
